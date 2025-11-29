@@ -1,30 +1,15 @@
-"use client"; // 因为用到了 useRouter 和 onClick，需要客户端组件
+// app/page.tsx（服务器组件）
+import ClientWidgetDemo from "@/components/ClientWidgetDemo";
+import LikeButton from "@/components/LikeButton";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-export default function HomePage() {
-  const router = useRouter();
-
-  const goToRandomPost = () => {
-    const postId = Math.floor(Math.random() * 1000);
-    router.push(`/posts/${postId}`);
-  };
-
+export default async function Home() {
+  const initialCount = 3;
   return (
     <main className='p-8'>
-      <h1 className='text-2xl font-bold mb-4'>首页</h1>
-      <div className='flex flex-col gap-2'>
-        <Link href='/posts/getting-started' className='text-blue-500 hover:underline'>
-          阅读文章：Getting Started
-        </Link>
-        <Link href='/posts/advanced-tips' className='text-blue-500 hover:underline'>
-          阅读文章：Advanced Tips
-        </Link>
-        <button onClick={goToRandomPost} className='bg-blue-500 text-white p-2 rounded-md mt-4 w-fit'>
-          跳转到一篇随机文章
-        </button>
-      </div>
+      <h1 className='text-2xl font-bold mb-2'>首页（RSC）</h1>
+      <p className='mb-4'>下面是一个客户端交互按钮：</p>
+      <LikeButton initialCount={initialCount} />
+      <ClientWidgetDemo />
     </main>
   );
 }
