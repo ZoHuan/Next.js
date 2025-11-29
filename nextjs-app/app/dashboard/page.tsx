@@ -1,14 +1,13 @@
 // app/dashboard/page.tsx
-import Link from "next/link";
-
-export default function Page() {
+export default async function Dashboard() {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    cache: "no-store",
+  });
+  const metrics = await res.json();
   return (
-    <section>
-      <h1>仪表盘</h1>
-      <p>欢迎回来！这里是你的数据总览。</p>
-      <p>
-        前往 <Link href='/dashboard/settings'>设置</Link>
-      </p>
-    </section>
+    <div className='p-6'>
+      <h1>实时指标（不缓存）</h1>
+      <pre>{JSON.stringify(metrics, null, 2)}</pre>
+    </div>
   );
 }
