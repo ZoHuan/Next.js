@@ -1,6 +1,6 @@
-import HeroSection from "./HeroSection";
-import ArticleList from "./ArticleList";
-import Sidebar from "./Sidebar";
+import HeroSection from "@/components/ui/HeroSection";
+import ArticleList from "@/components/blog/ArticleList";
+import Sidebar from "@/components/layout/Sidebar";
 
 export default function HomePage() {
   return (

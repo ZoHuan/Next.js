@@ -1,4 +1,4 @@
-import ArticleCard from "./ArticleCard";
+import ArticleCard from "@/components/blog/ArticleCard";
 
 // 示例数据，后续可以从API获取
 const articles = [

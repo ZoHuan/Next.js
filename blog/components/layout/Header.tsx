@@ -60,10 +60,7 @@ export default function Header({ isLoggedIn = false }: HeaderProps) {
                 >
                   登录
                 </Link>
-                <Link
-                  className='px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors'
-                  href='/register'
-                >
+                <Link className='px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors' href='/signup'>
                   注册
                 </Link>
               </div>
