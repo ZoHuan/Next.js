@@ -21,8 +21,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link className='text-gray-600 hover:text-blue-600 text-sm transition-colors' href='/tags'>
-                  分类
+                <Link className='text-gray-600 hover:text-blue-600 text-sm transition-colors' href='/blog'>
+                  文章
                 </Link>
               </li>
               <li>

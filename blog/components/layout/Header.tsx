@@ -21,8 +21,8 @@ export default function Header({ isLoggedIn = false }: HeaderProps) {
           <Link className='text-sm font-medium transition-colors hover:text-blue-600 text-blue-600' href='/'>
             首页
           </Link>
-          <Link className='text-sm font-medium transition-colors hover:text-blue-600 text-gray-700' href='/tags'>
-            分类
+          <Link className='text-sm font-medium transition-colors hover:text-blue-600 text-gray-700' href='/blog'>
+            文章
           </Link>
 
           {/* 条件渲染登录/注册按钮或用户菜单 */}

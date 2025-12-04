@@ -4,6 +4,7 @@ import ArticleCard from "@/components/blog/ArticleCard";
 const articles = [
   {
     id: "1",
+    slug: "react-typescript-modern-web-app",
     title: "使用React和TypeScript构建现代化Web应用",
     description:
       "在当今的前端开发领域，React和TypeScript已经成为构建现代化Web应用的主流技术栈。本文将深入探讨如何利用这两种技术构建高性能、可维护的Web应用。",
@@ -21,6 +22,7 @@ const articles = [
   },
   {
     id: "2",
+    slug: "nextjs-14-features",
     title: "Next.js 14新特性深度解析",
     description: "Next.js 14带来了许多令人兴奋的新特性，包括App Router的稳定、Server Actions的改进等。本文将对主要新特性进行详细解析。",
     imageUrl:
@@ -36,6 +38,7 @@ const articles = [
   },
   {
     id: "3",
+    slug: "tailwind-css-best-practices",
     title: "Tailwind CSS最佳实践指南",
     description: "Tailwind CSS作为一款实用的CSS框架，在开发效率方面有着显著优势。本文分享一些Tailwind CSS的最佳实践和技巧。",
     imageUrl: "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=tailwind%20css%20design%20system&sign=def456ghi789",

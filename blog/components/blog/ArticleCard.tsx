@@ -19,7 +19,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ id, title, description, imageUrl, tags, author, date, views, likes }: ArticleCardProps) {
   return (
     <div className='group overflow-hidden rounded-xl shadow-md hover:shadow-lg bg-white dark:bg-gray-800 transition-shadow duration-300'>
-      <Link className='block' href={`/article/${id}`}>
+      <Link className='block' href={`/blog/${id}`}>
         <div className='relative overflow-hidden h-48'>
           <Image
             src={imageUrl}
