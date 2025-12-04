@@ -39,10 +39,10 @@ export default function Header({ isLoggedIn = false }: HeaderProps) {
                     <i className='fa-solid fa-chevron-down text-xs text-gray-700'></i>
                   </button>
                   <div className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-10 transform scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 origin-top-right'>
-                    <Link href='/editor' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'>
+                    <Link href='/manage/posts/new' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'>
                       写文章
                     </Link>
-                    <Link href='/admin' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'>
+                    <Link href='/manage' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'>
                       管理
                     </Link>
                     <a href='#' className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'>

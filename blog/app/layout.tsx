@@ -35,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // 暂时使用一个变量来模拟登录状态
-  const isLoggedIn = false; // 改为true来测试登录后的导航栏
+  const isLoggedIn = true; // 改为true来测试登录后的导航栏
 
   return (
     <html lang='zh-CN' className='custom-scrollbar'>
