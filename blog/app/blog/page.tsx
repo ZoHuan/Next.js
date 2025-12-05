@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import BlogHeader from "@/components/blog/BlogHeader";
-import ArticleGrid from "@/components/blog/ArticleGrid";
+import PageHeader from "@/components/blog/PageHeader";
+import Grid from "@/components/blog/Grid";
 import Pagination from "@/components/ui/Pagination";
 
 // 示例文章数据
@@ -125,9 +125,9 @@ export default function BlogPage() {
 
   return (
     <main className='flex-1 container mx-auto px-4 py-8'>
-      <BlogHeader title='博客文章' subtitle='分享技术与思考，记录学习与成长' />
+      <PageHeader title='博客文章' subtitle='分享技术与思考，记录学习与成长' />
 
-      <ArticleGrid articles={currentArticles} />
+      <Grid articles={currentArticles} />
 
       {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </main>

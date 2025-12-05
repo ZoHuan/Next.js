@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-interface ArticleCardProps {
+interface CardProps {
   id: string;
   title: string;
   description: string;
@@ -16,7 +16,7 @@ interface ArticleCardProps {
   likes: number;
 }
 
-export default function ArticleCard({ id, title, description, imageUrl, tags, author, date, views, likes }: ArticleCardProps) {
+export default function Card({ id, title, description, imageUrl, tags, author, date, views, likes }: CardProps) {
   return (
     <div className='group overflow-hidden rounded-xl shadow-md hover:shadow-lg bg-white dark:bg-gray-800 transition-shadow duration-300'>
       <Link className='block' href={`/blog/${id}`}>

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { Article, Comment } from "@/types/article";
-import ArticleHeader from "@/components/blog/ArticleHeader";
-import ArticleContent from "@/components/blog/ArticleContent";
+import { Article, Comment } from "@/types/blog.types";
+import Header from "@/components/blog/Header";
+import Content from "@/components/blog/Content";
 import CommentSection from "@/components/blog/CommentSection";
 
 // 模拟文章数据
@@ -220,8 +220,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <main className='flex-1 container mx-auto px-4 py-8'>
       <div className='max-w-3xl mx-auto'>
-        <ArticleHeader article={article} />
-        <ArticleContent article={article} />
+        <Header article={article} />
+        <Content article={article} />
         <CommentSection comments={comments} commentCount={comments.length} />
       </div>
     </main>

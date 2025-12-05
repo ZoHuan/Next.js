@@ -1,9 +1,9 @@
-interface BlogHeaderProps {
+interface PageHeaderProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
 }
 
-export default function BlogHeader({ title, subtitle }: BlogHeaderProps) {
+export default function PageHeader({ title, subtitle }: PageHeaderProps) {
   return (
     <div className='mb-8 text-center' style={{ opacity: 1, transform: "none" }}>
       <h1 className='text-2xl md:text-3xl font-bold mb-2'>{title}</h1>

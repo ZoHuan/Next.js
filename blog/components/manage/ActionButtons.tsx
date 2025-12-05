@@ -9,7 +9,7 @@ interface ActionButtonsProps {
   cancelLabel?: string;
 }
 
-export default function ActionButtons({ onSave, cancelHref = "/manage", saveLabel = "保存文章", cancelLabel = "取消" }: ActionButtonsProps) {
+export default function ActionButtons({ onSave, cancelHref = "/manage/articles", saveLabel = "保存文章", cancelLabel = "取消" }: ActionButtonsProps) {
   return (
     <div className='flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-800'>
       <Link

@@ -1,4 +1,4 @@
-import { Comment } from "@/types/article";
+import { Comment } from "@/types/blog.types";
 import CommentItem from "./CommentItem";
 
 interface CommentListProps {

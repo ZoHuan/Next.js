@@ -8,7 +8,6 @@ const MDEditor = dynamic(() => import("@uiw/react-md-editor").then((mod) => mod.
 interface MarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
-  mode: "edit" | "preview" | "live";
   height?: number;
   placeholder?: string;
 }
@@ -16,7 +15,6 @@ interface MarkdownEditorProps {
 export default function MarkdownEditor({
   value,
   onChange,
-  mode,
   height = 600,
   placeholder = "开始编写你的文章内容（支持Markdown格式）...",
 }: MarkdownEditorProps) {
@@ -26,7 +24,7 @@ export default function MarkdownEditor({
         value={value}
         onChange={(value) => onChange(value || "")}
         height={height}
-        preview={mode}
+        preview='edit'
         hideToolbar={false}
         visibleDragbar={true}
         textareaProps={{

@@ -5,7 +5,6 @@ import Link from "next/link";
 import TitleInput from "@/components/manage/TitleInput";
 import CoverImageUpload from "@/components/manage/CoverImageUpload";
 import TagManager from "@/components/manage/TagManager";
-import EditorModeSelector from "@/components/manage/EditorModeSelector";
 import MarkdownEditor from "@/components/manage/MarkdownEditor";
 import ActionButtons from "@/components/manage/ActionButtons";
 
@@ -13,7 +12,6 @@ export default function NewPostPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [editorMode, setEditorMode] = useState<"edit" | "preview" | "live">("edit");
 
   const handleSave = () => {
     // 这里可以添加保存文章的逻辑
@@ -46,11 +44,8 @@ export default function NewPostPage() {
             {/* 标签管理 */}
             <TagManager tags={tags} onTagsChange={setTags} />
 
-            {/* 编辑器模式选择 */}
-            <EditorModeSelector mode={editorMode} onModeChange={setEditorMode} />
-
             {/* Markdown编辑器 */}
-            <MarkdownEditor value={content} onChange={setContent} mode={editorMode} height={600} />
+            <MarkdownEditor value={content} onChange={setContent} height={600} />
 
             {/* 操作按钮 */}
             <ActionButtons onSave={handleSave} />

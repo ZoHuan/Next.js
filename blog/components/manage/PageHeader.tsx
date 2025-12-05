@@ -8,7 +8,7 @@ export default function PageHeader() {
         <p className='text-gray-600 dark:text-gray-400'>管理你的所有文章和内容</p>
       </div>
       <Link
-        href='/manage/posts/new'
+        href='/manage/articles/create'
         className='mt-4 sm:mt-0 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors flex items-center'
       >
         <i className='fa-solid fa-plus mr-2'></i> 新建文章

@@ -1,11 +1,19 @@
-import { Post } from "@/types/post";
-import PostListItem from "./PostListItem";
+import ListItem from "./ListItem";
 
-interface PostListProps {
-  posts: Post[];
+interface ListProps {
+  posts: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    status: string;
+    createdAt: string;
+    views: number;
+    image: string;
+    tags: string[];
+  }>;
 }
 
-export default function PostList({ posts }: PostListProps) {
+export default function List({ posts }: ListProps) {
   if (posts.length === 0) {
     return (
       <div className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 text-center'>
@@ -29,7 +37,7 @@ export default function PostList({ posts }: PostListProps) {
           </thead>
           <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
             {posts.map((post) => (
-              <PostListItem key={post.id} post={post} />
+              <ListItem key={post.id} post={post} />
             ))}
           </tbody>
         </table>

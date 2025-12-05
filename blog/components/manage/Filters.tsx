@@ -1,11 +1,11 @@
-import { PostFilters as PostFiltersType } from "@/types/post";
+import { PostFilters as FiltersType } from "@/types/manage.types";
 
-interface PostFiltersProps {
-  filters: PostFiltersType;
-  onFiltersChange: (filters: PostFiltersType) => void;
+interface FiltersProps {
+  filters: FiltersType;
+  onFiltersChange: (filters: FiltersType) => void;
 }
 
-export default function PostFilters({ filters, onFiltersChange }: PostFiltersProps) {
+export default function Filters({ filters, onFiltersChange }: FiltersProps) {
   const handleSearchChange = (searchTerm: string) => {
     onFiltersChange({ ...filters, searchTerm });
   };

@@ -1,11 +1,28 @@
 import Link from "next/link";
-import { Article } from "@/types/article";
+import { Article } from "@/types/blog.types";
 
-interface ArticleHeaderProps {
+interface HeaderProps {
   article: Article;
 }
 
-export default function ArticleHeader({ article }: ArticleHeaderProps) {
+interface HeaderProps {
+  article: {
+    id: string;
+    title: string;
+    content: string;
+    imageUrl: string;
+    tags: string[];
+    author: {
+      name: string;
+      avatar: string;
+    };
+    date: string;
+    views: number;
+    likes: number;
+  };
+}
+
+export default function Header({ article }: HeaderProps) {
   return (
     <>
       {/* 返回按钮 */}

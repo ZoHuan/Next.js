@@ -1,4 +1,4 @@
-import { Comment } from "@/types/article";
+import { Comment } from "@/types/blog.types";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 

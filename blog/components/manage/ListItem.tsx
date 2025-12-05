@@ -1,11 +1,20 @@
 import Link from "next/link";
-import { Post } from "@/types/post";
+import { Post } from "@/types/manage.types";
 
-interface PostListItemProps {
-  post: Post;
+interface ListItemProps {
+  post: {
+    id: string;
+    title: string;
+    slug: string;
+    status: string;
+    createdAt: string;
+    views: number;
+    image: string;
+    tags: string[];
+  };
 }
 
-export default function PostListItem({ post }: PostListItemProps) {
+export default function ListItem({ post }: ListItemProps) {
   return (
     <tr>
       <td className='px-6 py-4 whitespace-nowrap'>
@@ -44,7 +53,7 @@ export default function PostListItem({ post }: PostListItemProps) {
       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
         <div className='flex space-x-2'>
           <Link
-            href={`/manage/posts/${post.slug}/edit`}
+            href={`/manage/articles/edit/${post.id}`}
             className='text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors duration-200'
           >
             编辑
