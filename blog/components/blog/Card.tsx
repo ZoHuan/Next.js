@@ -1,22 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Article } from "@/types/blog.types";
 
-interface CardProps {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  tags: string[];
-  author: {
-    name: string;
-    avatar: string;
-  };
-  date: string;
-  views: number;
-  likes: number;
-}
-
-export default function Card({ id, title, description, imageUrl, tags, author, date, views, likes }: CardProps) {
+export default function Card({ id, title, description, imageUrl, tags, author, date }: Article) {
   return (
     <div className='group overflow-hidden rounded-xl shadow-md hover:shadow-lg bg-white dark:bg-gray-800 transition-shadow duration-300'>
       <Link className='block' href={`/blog/${id}`}>
@@ -53,12 +39,6 @@ export default function Card({ id, title, description, imageUrl, tags, author, d
           </div>
           <div className='flex items-center space-x-4 text-sm'>
             <span className='text-gray-500 dark:text-gray-400'>{date}</span>
-            <span className='flex items-center text-gray-500 dark:text-gray-400'>
-              <i className='fa-regular fa-eye mr-1'></i> {views}
-            </span>
-            <span className='flex items-center text-gray-500 dark:text-gray-400'>
-              <i className='fa-regular fa-heart mr-1'></i> {likes}
-            </span>
           </div>
         </div>
       </div>

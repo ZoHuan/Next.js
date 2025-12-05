@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import PageHeader from "@/components/blog/PageHeader";
-import Grid from "@/components/blog/Grid";
+import BlogPageHeader from "@/components/blog/BlogPageHeader";
+import ArticleBase from "@/components/blog/ArticleBase";
 import Pagination from "@/components/ui/Pagination";
 
 // 示例文章数据
@@ -22,8 +22,6 @@ const articles = [
         "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=author%20avatar%20profile%20picture&sign=2bb72f7bbd14267b13784628f81d3283",
     },
     date: "2025年11月28日",
-    views: 1243,
-    likes: 89,
   },
   {
     id: "2",
@@ -40,8 +38,6 @@ const articles = [
         "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=author%20avatar%20profile%20picture&sign=2bb72f7bbd14267b13784628f81d3283",
     },
     date: "2025年11月25日",
-    views: 892,
-    likes: 76,
   },
   {
     id: "3",
@@ -56,8 +52,6 @@ const articles = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=developer%20avatar&sign=xyz789",
     },
     date: "2025年11月27日",
-    views: 892,
-    likes: 67,
   },
   {
     id: "4",
@@ -71,8 +65,6 @@ const articles = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=designer%20avatar&sign=jkl012",
     },
     date: "2025年11月26日",
-    views: 756,
-    likes: 45,
   },
   {
     id: "5",
@@ -86,8 +78,6 @@ const articles = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=programmer%20avatar&sign=mno345",
     },
     date: "2025年11月24日",
-    views: 634,
-    likes: 38,
   },
   {
     id: "6",
@@ -101,8 +91,6 @@ const articles = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=engineer%20avatar&sign=vwx234",
     },
     date: "2025年11月23日",
-    views: 521,
-    likes: 29,
   },
 ];
 
@@ -125,9 +113,15 @@ export default function BlogPage() {
 
   return (
     <main className='flex-1 container mx-auto px-4 py-8'>
-      <PageHeader title='博客文章' subtitle='分享技术与思考，记录学习与成长' />
+      <BlogPageHeader title='博客文章' subtitle='分享技术与思考，记录学习与成长' />
 
-      <Grid articles={currentArticles} />
+      {/* 直接使用ArticleBase组件，配置3列布局和小标题 */}
+      <ArticleBase
+        articles={currentArticles}
+        title='所有文章'
+        gridCols='grid-cols-1 md:grid-cols-3'
+        titleClassName='text-xl font-bold' // ArticleGrid的样式
+      />
 
       {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </main>

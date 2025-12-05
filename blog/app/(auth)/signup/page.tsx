@@ -94,7 +94,7 @@ export default function SignupPage() {
     <AuthFormContainer title='创建新账号' subtitle='只需输入邮箱和密码，即可完成注册' icon='fa-solid fa-user-plus' footer={footer}>
       {errors.submit && <ErrorMessage message={errors.submit} />}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className='space-y-4'>
           <FormInput
             label='邮箱'

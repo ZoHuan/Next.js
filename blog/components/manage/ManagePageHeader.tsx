@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function PageHeader() {
+export default function ManagePageHeader() {
   return (
     <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8'>
       <div>

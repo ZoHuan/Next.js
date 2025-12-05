@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 interface HeaderProps {
   isLoggedIn?: boolean;
 }
 
-export default function Header({ isLoggedIn = false }: HeaderProps) {
+export default function NavigationHeader({ isLoggedIn = false }: HeaderProps) {
   return (
     <header className='sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200 transition-all duration-300 shadow-sm'>
       <div className='container mx-auto px-4 py-4 flex items-center justify-between'>

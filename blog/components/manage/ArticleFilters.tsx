@@ -1,11 +1,12 @@
-import { PostFilters as FiltersType } from "@/types/manage.types";
-
-interface FiltersProps {
-  filters: FiltersType;
-  onFiltersChange: (filters: FiltersType) => void;
+interface ArticleFiltersProps {
+  filters: {
+    searchTerm: string;
+    statusFilter: "all" | "published" | "draft";
+  };
+  onFiltersChange: (filters: { searchTerm: string; statusFilter: "all" | "published" | "draft" }) => void;
 }
 
-export default function Filters({ filters, onFiltersChange }: FiltersProps) {
+export default function ArticleFilters({ filters, onFiltersChange }: ArticleFiltersProps) {
   const handleSearchChange = (searchTerm: string) => {
     onFiltersChange({ ...filters, searchTerm });
   };

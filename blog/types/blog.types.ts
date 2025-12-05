@@ -1,26 +1,30 @@
+// 核心数据模型类型
+export interface Tag {
+  name: string;
+  count: number;
+}
+
+export interface Author {
+  name: string;
+  avatar: string;
+}
+
 export interface Article {
   id: string;
   slug: string;
   title: string;
   content: string;
+  description: string;
   imageUrl: string;
   tags: string[];
-  author: {
-    name: string;
-    avatar: string;
-  };
-  date: string;
-  views: number;
-  likes: number;
+  author: Author;
+  createdAt: string; // 统一为createdAt
 }
 
 export interface Comment {
   id: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
+  author: Author;
   content: string;
-  date: string;
+  createdAt: string; // 统一为createdAt
   replies?: Comment[];
 }

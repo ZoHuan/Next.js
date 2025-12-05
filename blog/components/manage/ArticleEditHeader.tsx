@@ -6,7 +6,7 @@ interface EditPageHeaderProps {
   backLabel?: string;
 }
 
-export default function EditPageHeader({ title, backHref = "/manage/articles", backLabel = "返回管理" }: EditPageHeaderProps) {
+export default function ArticleEditHeader({ title, backHref = "/manage/articles", backLabel = "返回管理" }: EditPageHeaderProps) {
   return (
     <div className='flex items-center justify-between mb-6'>
       <h1 className='text-2xl font-bold'>{title}</h1>

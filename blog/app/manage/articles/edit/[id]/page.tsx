@@ -2,19 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import EditPageHeader from "@/components/manage/EditPageHeader";
 import ArticleEditor from "@/components/manage/ArticleEditor";
-import LoadingState from "@/components/ui/LoadingState";
 
-interface PostData {
-  id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  coverImage?: string;
-}
-
-export default function EditPostPage() {
+export default function EditArticlePage() {
   const params = useParams();
   const postId = params.id as string;
 
@@ -40,20 +30,8 @@ React是一个用于构建用户界面的JavaScript库，它采用组件化的�
     const fetchPostData = async () => {
       setIsLoading(true);
       try {
-        // 这里可以替换为实际的API调用
-        // const response = await fetch(`/api/posts/${postId}`);
-        // const postData = await response.json();
-
         // 模拟API响应延迟
         await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // 设置从API获取的数据
-        // setInitialData({
-        //   title: postData.title,
-        //   content: postData.content,
-        //   tags: postData.tags,
-        //   coverImage: postData.coverImage
-        // });
       } catch (error) {
         console.error("获取文章数据失败:", error);
       } finally {
@@ -79,23 +57,14 @@ React是一个用于构建用户界面的JavaScript库，它采用组件化的�
   };
 
   return (
-    <main className='flex-1 container mx-auto px-4 py-8'>
-      <div className='max-w-3xl mx-auto'>
-        <EditPageHeader title='编辑文章' />
-
-        {isLoading ? (
-          <LoadingState title='加载文章数据' message='正在获取文章内容...' />
-        ) : (
-          <ArticleEditor
-            initialTitle={initialData.title}
-            initialContent={initialData.content}
-            initialTags={initialData.tags}
-            initialCoverImage={initialData.coverImage}
-            onSave={handleSave}
-            saveLabel='保存文章'
-          />
-        )}
-      </div>
-    </main>
+    <ArticleEditor
+      initialTitle={initialData.title}
+      initialContent={initialData.content}
+      initialTags={initialData.tags}
+      initialCoverImage={initialData.coverImage}
+      onSave={handleSave}
+      isLoading={isLoading}
+      mode='edit'
+    />
   );
 }

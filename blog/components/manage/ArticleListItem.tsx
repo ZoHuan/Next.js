@@ -1,20 +1,11 @@
 import Link from "next/link";
-import { Post } from "@/types/manage.types";
+import { Post } from "@/types";
 
 interface ListItemProps {
-  post: {
-    id: string;
-    title: string;
-    slug: string;
-    status: string;
-    createdAt: string;
-    views: number;
-    image: string;
-    tags: string[];
-  };
+  post: Post;
 }
 
-export default function ListItem({ post }: ListItemProps) {
+export default function ArticleListItem({ post }: ListItemProps) {
   return (
     <tr>
       <td className='px-6 py-4 whitespace-nowrap'>
@@ -49,7 +40,6 @@ export default function ListItem({ post }: ListItemProps) {
         </span>
       </td>
       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400'>{post.createdAt}</td>
-      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400'>{post.views}</td>
       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
         <div className='flex space-x-2'>
           <Link

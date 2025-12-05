@@ -5,24 +5,7 @@ interface HeaderProps {
   article: Article;
 }
 
-interface HeaderProps {
-  article: {
-    id: string;
-    title: string;
-    content: string;
-    imageUrl: string;
-    tags: string[];
-    author: {
-      name: string;
-      avatar: string;
-    };
-    date: string;
-    views: number;
-    likes: number;
-  };
-}
-
-export default function Header({ article }: HeaderProps) {
+export default function ArticleHeader({ article }: HeaderProps) {
   return (
     <>
       {/* 返回按钮 */}
@@ -57,15 +40,9 @@ export default function Header({ article }: HeaderProps) {
               <img src={article.author.avatar} alt={article.author.name} className='w-8 h-8 rounded-full object-cover' />
               <span>{article.author.name}</span>
             </div>
-            <span>{article.date}</span>
           </div>
           <div className='flex items-center space-x-4'>
-            <span className='flex items-center'>
-              <i className='fa-regular fa-eye mr-1'></i> {article.views}
-            </span>
-            <span className='flex items-center'>
-              <i className='fa-regular fa-heart mr-1'></i> {article.likes}
-            </span>
+            <span>{article.createdAt}</span>
           </div>
         </div>
       </div>

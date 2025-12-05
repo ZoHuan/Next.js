@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
+import NavigationHeader from "@/components/layout/NavigationHeader";
 import Footer from "@/components/layout/Footer";
 
 const geistSans = Geist({
@@ -41,7 +41,7 @@ export default function RootLayout({
     <html lang='zh-CN' className='custom-scrollbar'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className='min-h-screen flex flex-col bg-gray-50 text-gray-900 '>
-          <Header isLoggedIn={isLoggedIn} />
+          <NavigationHeader isLoggedIn={isLoggedIn} />
           {children}
           <Footer />
         </div>

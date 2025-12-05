@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { Post, PostFilters } from "@/types/manage.types";
-import PageHeader from "@/components/manage/PageHeader";
-import Filters from "@/components/manage/Filters";
-import List from "@/components/manage/List";
+import ManagePageHeader from "@/components/manage/ManagePageHeader";
+import ArticleFilters from "@/components/manage/ArticleFilters";
+import ArticleManageList from "@/components/manage/ArticleManageList";
 import Pagination from "@/components/ui/Pagination";
 
 // 模拟文章数据
@@ -15,7 +15,6 @@ const mockPosts: Post[] = [
     slug: "react-typescript-modern-web-app",
     status: "published",
     createdAt: "2025年11月28日",
-    views: 1243,
     image:
       "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=modern%20web%20development%20react%20typescript&sign=fe2e0a3297c5ac6c97c02223ddbaf9c8",
     tags: ["React", "TypeScript", "前端开发"],
@@ -26,7 +25,6 @@ const mockPosts: Post[] = [
     slug: "react-hooks-best-practices",
     status: "published",
     createdAt: "2024年1月15日",
-    views: 1234,
     image: "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=react%20hooks%20best%20practices&sign=random123",
     tags: ["React", "Hooks", "最佳实践"],
   },
@@ -36,7 +34,6 @@ const mockPosts: Post[] = [
     slug: "typescript-advanced-tips",
     status: "published",
     createdAt: "2024年1月10日",
-    views: 856,
     image: "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=typescript%20advanced%20tips&sign=random456",
     tags: ["TypeScript", "技巧", "进阶"],
   },
@@ -46,7 +43,7 @@ const mockPosts: Post[] = [
     slug: "nextjs-13-features",
     status: "draft",
     createdAt: "2024年1月5日",
-    views: 0,
+
     image: "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=nextjs%2013%20features&sign=random789",
     tags: ["Next.js", "新特性", "React"],
   },
@@ -56,13 +53,13 @@ const mockPosts: Post[] = [
     slug: "tailwind-css-guide",
     status: "published",
     createdAt: "2024年1月1日",
-    views: 2100,
+
     image: "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=tailwind%20css%20guide&sign=random012",
     tags: ["Tailwind", "CSS", "样式"],
   },
 ];
 
-export default function ManagePage() {
+export default function ArticlePage() {
   const [filters, setFilters] = useState<PostFilters>({
     searchTerm: "",
     statusFilter: "all",
@@ -95,11 +92,11 @@ export default function ManagePage() {
   return (
     <main className='flex-1 container mx-auto px-4 py-8'>
       <div className='max-w-5xl mx-auto'>
-        <PageHeader />
+        <ManagePageHeader />
 
-        <Filters filters={filters} onFiltersChange={setFilters} />
+        <ArticleFilters filters={filters} onFiltersChange={setFilters} />
 
-        <List posts={currentPosts} />
+        <ArticleManageList posts={currentPosts} />
 
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       </div>

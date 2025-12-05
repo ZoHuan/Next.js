@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { Article, Comment } from "@/types/blog.types";
-import Header from "@/components/blog/Header";
-import Content from "@/components/blog/Content";
+import { Article, Comment } from "@/types";
+import ArticleHeader from "@/components/blog/ArticleHeader";
+import ArticleContent from "@/components/blog/ArticleContent";
 import CommentSection from "@/components/blog/CommentSection";
 
 // 模拟文章数据
@@ -32,8 +32,6 @@ const articles: Article[] = [
         "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=author%20avatar%20profile%20picture&sign=2bb72f7bbd14267b13784628f81d3283",
     },
     date: "2025年11月28日 18:30",
-    views: 1243,
-    likes: 89,
   },
   {
     id: "2",
@@ -50,8 +48,6 @@ const articles: Article[] = [
         "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=author%20avatar%20profile%20picture&sign=2bb72f7bbd14267b13784628f81d3283",
     },
     date: "2025年11月25日",
-    views: 892,
-    likes: 76,
   },
   {
     id: "3",
@@ -78,8 +74,6 @@ const articles: Article[] = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=developer%20avatar&sign=xyz789",
     },
     date: "2025年11月27日",
-    views: 892,
-    likes: 67,
   },
   {
     id: "4",
@@ -105,8 +99,6 @@ const articles: Article[] = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=designer%20avatar&sign=jkl012",
     },
     date: "2025年11月26日",
-    views: 756,
-    likes: 45,
   },
   {
     id: "5",
@@ -132,8 +124,6 @@ const articles: Article[] = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=programmer%20avatar&sign=mno345",
     },
     date: "2025年11月24日",
-    views: 634,
-    likes: 38,
   },
   {
     id: "6",
@@ -159,8 +149,6 @@ const articles: Article[] = [
       avatar: "https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=engineer%20avatar&sign=vwx234",
     },
     date: "2025年11月23日",
-    views: 521,
-    likes: 29,
   },
 ];
 
@@ -220,8 +208,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <main className='flex-1 container mx-auto px-4 py-8'>
       <div className='max-w-3xl mx-auto'>
-        <Header article={article} />
-        <Content article={article} />
+        <ArticleHeader article={article} />
+        <ArticleContent article={article} />
         <CommentSection comments={comments} commentCount={comments.length} />
       </div>
     </main>

@@ -1,19 +1,11 @@
-import ListItem from "./ListItem";
+import ArticleListItem from "./ArticleListItem";
+import { Post } from "@/types";
 
 interface ListProps {
-  posts: Array<{
-    id: string;
-    title: string;
-    slug: string;
-    status: string;
-    createdAt: string;
-    views: number;
-    image: string;
-    tags: string[];
-  }>;
+  posts: Post[];
 }
 
-export default function List({ posts }: ListProps) {
+export default function ArticleManageList({ posts }: ListProps) {
   if (posts.length === 0) {
     return (
       <div className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 text-center'>
@@ -31,13 +23,12 @@ export default function List({ posts }: ListProps) {
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider'>标题</th>
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider'>状态</th>
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider'>发布日期</th>
-              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider'>浏览量</th>
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider'>操作</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
             {posts.map((post) => (
-              <ListItem key={post.id} post={post} />
+              <ArticleListItem key={post.id} post={post} />
             ))}
           </tbody>
         </table>
