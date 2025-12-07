@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AuthFormContainer from "@/components/auth/AuthFormContainer";
 import FormInput from "@/components/ui/FormInput";
 import SubmitButton from "@/components/ui/SubmitButton";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { AuthValidationService } from "@/services/authValidation";
 
 export default function SignupPage() {
@@ -16,78 +16,78 @@ export default function SignupPage() {
     confirmPassword: "",
     username: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  const { error, signup, clearError } = useAuth();
+  const { isLoading, error, signUp, clearError } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormErrors({});
-    setSuccessMessage(null);
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setFormErrors({});
+      setSuccessMessage(null);
 
-    // 表单验证
-    const errors: Record<string, string> = {};
+      // 表单验证
+      const errors: Record<string, string> = {};
 
-    const emailError = AuthValidationService.validateEmail(formData.email);
-    if (emailError) errors.email = emailError;
+      const emailError = AuthValidationService.validateEmail(formData.email);
+      if (emailError) errors.email = emailError;
 
-    const usernameError = AuthValidationService.validateUsername(formData.username);
-    if (usernameError) errors.username = usernameError;
+      const usernameError = AuthValidationService.validateUsername(formData.username);
+      if (usernameError) errors.username = usernameError;
 
-    const passwordError = AuthValidationService.validatePassword(formData.password);
-    if (passwordError) errors.password = passwordError;
+      const passwordError = AuthValidationService.validatePassword(formData.password);
+      if (passwordError) errors.password = passwordError;
 
-    const confirmPasswordError = AuthValidationService.validateConfirmPassword(formData.password, formData.confirmPassword);
-    if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
+      const confirmPasswordError = AuthValidationService.validateConfirmPassword(formData.password, formData.confirmPassword);
+      if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
 
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
+      if (Object.keys(errors).length > 0) {
+        setFormErrors(errors);
+        return;
+      }
 
-    setIsLoading(true);
-
-    try {
-      const result = await signup(formData.email, formData.password, formData.username);
-
-      if (result.user?.identities?.length === 0) {
-        setFormErrors({ submit: "该邮箱已被注册" });
-      } else {
+      try {
+        await signUp(formData.email, formData.password, formData.username);
         setSuccessMessage("注册成功！请检查您的邮箱并点击验证链接以激活账号。");
 
         // 3秒后自动跳转到登录页面
         setTimeout(() => {
           router.push("/login");
         }, 3000);
+      } catch (err: any) {
+        // 处理特定的注册错误
+        if (err?.message?.includes("User already registered")) {
+          setFormErrors({ submit: "该邮箱已被注册" });
+        }
+        // 其他错误已经在context中处理
       }
-    } catch (err) {
-      // 错误已经在hook中处理
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [formData, signUp, router]
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // 清除对应字段的错误
-    if (formErrors[name]) {
-      setFormErrors((prev) => ({
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
         ...prev,
-        [name]: "",
+        [name]: value,
       }));
-    }
 
-    if (error) clearError();
-    if (successMessage) setSuccessMessage(null);
-  };
+      // 清除对应字段的错误
+      if (formErrors[name]) {
+        setFormErrors((prev) => ({
+          ...prev,
+          [name]: "",
+        }));
+      }
+
+      if (error) clearError();
+      if (successMessage) setSuccessMessage(null);
+    },
+    [formErrors, error, clearError, successMessage]
+  );
 
   const footer = (
     <p className='text-sm text-gray-600 dark:text-gray-400'>

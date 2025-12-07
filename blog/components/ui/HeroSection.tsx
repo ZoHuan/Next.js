@@ -1,6 +1,23 @@
+import { useState } from "react";
 import Image from "next/image";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onSearch: (searchTerm: string) => void;
+}
+
+export default function HeroSection({ onSearch }: HeroSectionProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    onSearch(searchTerm);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <section className='mb-12'>
       <div className='relative overflow-hidden rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg'>
@@ -14,9 +31,15 @@ export default function HeroSection() {
             <input
               type='text'
               placeholder='搜索文章...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
               className='px-4 py-2.5 rounded-md bg-white/10 backdrop-blur-sm text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all'
             />
-            <button className='px-4 py-2.5 bg-white text-blue-600 font-medium rounded-md hover:bg-opacity-90 transition-colors flex items-center justify-center shadow-md hover:shadow-lg'>
+            <button
+              onClick={handleSearch}
+              className='px-4 py-2.5 bg-white text-blue-600 font-medium rounded-md hover:bg-opacity-90 transition-colors flex items-center justify-center shadow-md hover:shadow-lg'
+            >
               <i className='fa-solid fa-search mr-2'></i> 搜索
             </button>
           </div>

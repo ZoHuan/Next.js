@@ -1,14 +1,15 @@
 import { supabase } from "./supabase";
+import { Tag } from "@/types";
 
 // 认证相关操作
 export const authApi = {
   supabase,
 
   // 生成默认头像URL
-  generateDefaultAvatar(username: string): string {
-    const uiAvatars = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=3b82f6&color=fff`;
+  generateDefaultAvatar(email: string): string {
+    const diceBearUrl = `https://api.dicebear.com/7.x/pixel-art/png?seed=${email}&background=3b82f6&color=fff`;
 
-    return uiAvatars;
+    return diceBearUrl;
   },
 
   // 用户注册
@@ -28,7 +29,7 @@ export const authApi = {
     // 如果注册成功且用户已确认，创建profiles记录
     if (data.user) {
       try {
-        const defaultAvatar = this.generateDefaultAvatar(username);
+        const defaultAvatar = this.generateDefaultAvatar(email);
 
         await supabase.from("profiles").insert({
           id: data.user.id,
@@ -100,8 +101,8 @@ export const authApi = {
 // 文章相关操作
 export const articleApi = {
   // 获取所有文章（支持分页和过滤）
-  async getArticles(options?: { page?: number; pageSize?: number; status?: "published" | "draft" | "all"; searchTerm?: string }) {
-    const { page = 1, pageSize = 10, status = "published", searchTerm = "" } = options || {};
+  async getArticles(options?: { page?: number; pageSize?: number; status?: "published" | "draft" | "all"; searchTerm?: string; tag?: string }) {
+    const { page = 1, pageSize = 10, status = "published", searchTerm = "", tag = "" } = options || {};
     const startIndex = (page - 1) * pageSize;
 
     let query = supabase
@@ -124,6 +125,11 @@ export const articleApi = {
       query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{${searchTerm}}`);
     }
 
+    // 标签过滤
+    if (tag) {
+      query = query.contains("tags", [tag]);
+    }
+
     const { data, error, count } = await query.range(startIndex, startIndex + pageSize - 1);
 
     if (error) throw error;
@@ -139,8 +145,8 @@ export const articleApi = {
           imageUrl: article.image_url,
           tags: article.tags || [],
           author: {
-            name: article.profiles?.username || "Unknown",
-            avatar: article.profiles?.avatar_url || "",
+            name: article.profiles?.username,
+            avatar: article.profiles?.avatar_url,
           },
           createdAt: article.created_at,
           status: article.status,
@@ -294,6 +300,33 @@ export const articleApi = {
     const { error } = await supabase.from("articles").delete().eq("id", id).eq("author_id", user.id); // 只能删除自己的文章
 
     if (error) throw error;
+  },
+
+  // 获取所有标签及其文章数量
+  async getAllTags() {
+    const { data, error } = await supabase.from("articles").select("tags, status").eq("status", "published");
+
+    if (error) throw error;
+
+    // 统计每个标签的文章数量
+    const tagCountMap = new Map<string, number>();
+
+    data?.forEach((article) => {
+      if (article.tags && Array.isArray(article.tags)) {
+        article.tags.forEach((tag) => {
+          if (tag && typeof tag === "string") {
+            tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+          }
+        });
+      }
+    });
+
+    // 转换为Tag数组并按文章数量降序排序
+    const tags: Tag[] = Array.from(tagCountMap.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
+    return tags;
   },
 };
 

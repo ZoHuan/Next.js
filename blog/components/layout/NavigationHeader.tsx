@@ -2,69 +2,34 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
-import { useState, useEffect } from "react";
-import { authApi } from "@/lib/db";
-import { supabase } from "@/lib/supabase";
-
-interface User {
-  id: string;
-  email?: string;
-  profile?: {
-    username?: string;
-    avatar_url?: string;
-  } | null;
-}
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function NavigationHeader() {
-  const { signOut } = useAuth();
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    // 检查用户登录状态
-    const checkAuthStatus = async () => {
-      try {
-        const currentUser = await authApi.getCurrentUser();
-        setUser(currentUser);
-      } catch (error) {
-        setUser(null);
-      }
-    };
-
-    checkAuthStatus();
-
-    // 监听认证状态变化
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        // 用户登录时获取完整的用户信息
-        try {
-          const currentUser = await authApi.getCurrentUser();
-          setUser(currentUser);
-        } catch (error) {
-          setUser(null);
-        }
-      } else if (event === "SIGNED_OUT") {
-        // 用户退出时清空状态
-        setUser(null);
-      }
-    });
-
-    // 清理函数
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  const { user, signOut } = useAuth();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      setUser(null);
     } catch (error) {
       console.error("退出登录失败:", error);
     }
   };
+
+  // 判断当前路由是否激活
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(path);
+  };
+
+  // 导航项配置
+  const navItems = [
+    { href: "/", label: "首页" },
+    { href: "/blog", label: "文章" },
+  ];
 
   return (
     <header className='sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200 transition-all duration-300 shadow-sm'>
@@ -76,12 +41,17 @@ export default function NavigationHeader() {
           </Link>
         </div>
         <nav className='hidden md:flex items-center space-x-8'>
-          <Link className='text-sm font-medium transition-colors hover:text-blue-600 text-blue-600' href='/'>
-            首页
-          </Link>
-          <Link className='text-sm font-medium transition-colors hover:text-blue-600 text-gray-700' href='/blog'>
-            文章
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
+                isActive(item.href) ? "text-blue-600 font-semibold" : "text-gray-700"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
 
           {/* 条件渲染登录/注册按钮或用户菜单 */}
           <div className='flex items-center space-x-4'>

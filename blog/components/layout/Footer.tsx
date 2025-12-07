@@ -67,7 +67,7 @@ export default function Footer() {
           </div>
         </div>
         <div className='mt-8 pt-8 border-t border-gray-200 text-center'>
-          <p className='text-gray-600 text-sm'>© 2025 博客 保留所有权利.</p>
+          <p className='text-gray-600 text-sm'>© 2025 博客 保留所有权利</p>
         </div>
       </div>
     </footer>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import AuthFormContainer from "@/components/auth/AuthFormContainer";
 import FormInput from "@/components/ui/FormInput";
 import SubmitButton from "@/components/ui/SubmitButton";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { AuthValidationService } from "@/services/authValidation";
 
 export default function LoginPage() {
@@ -15,8 +16,9 @@ export default function LoginPage() {
   });
   const [rememberMe, setRememberMe] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const router = useRouter();
 
-  const { isLoading, error, login, clearError } = useAuth();
+  const { isLoading, error, signIn, clearError } = useAuth();
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -36,12 +38,14 @@ export default function LoginPage() {
       }
 
       try {
-        await login(formData.email, formData.password);
+        await signIn(formData.email, formData.password);
+        // 登录成功后跳转到管理页面
+        router.push("/manage/articles");
       } catch (err) {
-        // 错误已经在hook中处理
+        // 错误已经在context中处理
       }
     },
-    [formData, login]
+    [formData, signIn, router]
   );
 
   const handleChange = useCallback(

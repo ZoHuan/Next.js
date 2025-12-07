@@ -18,7 +18,7 @@ export default function Card({ id, title, description, imageUrl, tags, author, d
           <div className='absolute bottom-0 left-0 p-4 md:p-6 w-full'>
             <div className='flex flex-wrap gap-2 mb-2'>
               {tags.map((tag, index) => (
-                <span key={index} className='inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-500/80 text-white'>
+                <span key={`${tag}-${index}`} className='inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-500/80 text-white'>
                   {tag}
                 </span>
               ))}
@@ -31,7 +31,6 @@ export default function Card({ id, title, description, imageUrl, tags, author, d
         <p className='text-gray-600 dark:text-gray-300 text-sm md:text-base line-clamp-2 mb-4'>{description}</p>
         <div className='flex items-center justify-between'>
           <div className='flex items-center space-x-2'>
-            {/* 使用Font Awesome图标替代作者头像图片 */}
             <div className='w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center'>
               <i className='fa-regular fa-user text-gray-600 dark:text-gray-300'></i>
             </div>
