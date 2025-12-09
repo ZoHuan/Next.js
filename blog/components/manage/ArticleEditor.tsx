@@ -7,69 +7,92 @@ import CoverImageUpload from "@/components/manage/CoverImageUpload";
 import TagManager from "@/components/manage/TagManager";
 import MarkdownEditor from "@/components/manage/MarkdownEditor";
 import ArticleActionButtons from "@/components/manage/ArticleActionButtons";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface ArticleEditorProps {
-  initialTitle?: string;
-  initialContent?: string;
-  initialTags?: string[];
-  initialCoverImage?: string;
-  onSave: (articleData: { title: string; content: string; tags: string[]; coverImage?: string }) => void;
-  saveLabel?: string;
-  isLoading?: boolean;
-  mode?: "create" | "edit";
+  initialData?: {
+    title: string;
+    content: string;
+    tags: string[];
+    imageUrl: string;
+  };
+  onSave: (articleData: { title: string; content: string; tags: string[]; imageUrl: string; slug: string; description: string }) => void;
   pageTitle?: string;
+  saveLabel?: string;
+  mode?: "create" | "edit";
   showBackButton?: boolean;
 }
 
 export default function ArticleEditor({
-  initialTitle = "",
-  initialContent = "",
-  initialTags = [],
-  initialCoverImage = "",
+  initialData = {
+    title: "",
+    content: "",
+    tags: [],
+    imageUrl: "",
+  },
   onSave,
-  saveLabel = "保存文章",
-  isLoading = false,
   mode = "edit",
+  saveLabel = "保存文章",
   pageTitle,
   showBackButton = true,
 }: ArticleEditorProps) {
-  const [title, setTitle] = useState(initialTitle);
-  const [content, setContent] = useState(initialContent);
-  const [tags, setTags] = useState<string[]>(initialTags);
-  const [coverImage, setCoverImage] = useState(initialCoverImage);
+  // 直接使用initialData的值初始化状态
+  const [title, setTitle] = useState(initialData.title);
+  const [content, setContent] = useState(initialData.content);
+  const [tags, setTags] = useState<string[]>(initialData.tags);
+  const [imageUrl, setImageUrl] = useState(initialData.imageUrl);
 
-  const handleImageSelect = (file: File) => {
-    console.log("选择的图片:", file);
-    // 这里可以添加图片上传逻辑
-    // 上传成功后更新coverImage状态
+  const { user } = useAuth();
+
+  // 生成slug的方法
+  const generateSlug = (title: string): string => {
+    if (!title.trim()) return "";
+    return title
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .trim();
+  };
+
+  // 从内容中提取描述的方法
+  const extractDescription = (content: string): string => {
+    if (!content.trim()) return "文章描述";
+    const textContent = content.replace(/<[^>]*>/g, "");
+    const description = textContent.substring(0, 150).trim();
+    return description.length > 0 ? description + (textContent.length > 150 ? "..." : "") : "文章描述";
+  };
+
+  // 处理图片选择（上传完成后）
+  const handleImageSelect = (uploadedImageUrl: string) => {
+    setImageUrl(uploadedImageUrl);
   };
 
   const handleImageRemove = () => {
-    setCoverImage("");
+    setImageUrl("");
   };
 
   const handleSave = () => {
-    onSave({
+    // 检查用户登录状态
+    if (!user) {
+      alert("请先登录后再进行操作");
+      return;
+    }
+
+    const articleData = {
       title,
       content,
       tags,
-      coverImage,
-    });
+      imageUrl,
+      description: extractDescription(content),
+      slug: generateSlug(title),
+    };
+
+    onSave(articleData);
   };
 
   // 根据模式设置默认页面标题
   const defaultPageTitle = pageTitle || (mode === "create" ? "创建新文章" : "编辑文章");
-
-  if (isLoading) {
-    return (
-      <div className='bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md text-center'>
-        <div className='animate-pulse'>
-          <div className='h-4 bg-gray-300 rounded w-3/4 mx-auto mb-4'></div>
-          <div className='h-4 bg-gray-300 rounded w-1/2 mx-auto'></div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <main className='flex-1 container mx-auto px-4 py-8'>
@@ -91,7 +114,7 @@ export default function ArticleEditor({
             <TitleInput value={title} onChange={setTitle} />
 
             {/* 封面图片上传 */}
-            <CoverImageUpload onImageSelect={handleImageSelect} existingImage={coverImage} onImageRemove={handleImageRemove} />
+            <CoverImageUpload onImageSelect={handleImageSelect} existingImage={imageUrl} onImageRemove={handleImageRemove} />
 
             {/* 标签管理 */}
             <TagManager tags={tags} onTagsChange={setTags} />

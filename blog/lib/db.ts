@@ -105,7 +105,30 @@ export const articleApi = {
     const { page = 1, pageSize = 10, status = "published", searchTerm = "", tag = "" } = options || {};
     const startIndex = (page - 1) * pageSize;
 
-    let query = supabase
+    // 首先获取总记录数
+    let countQuery = supabase.from("articles").select("*", { count: "exact", head: true });
+
+    // 状态过滤
+    if (status !== "all") {
+      countQuery = countQuery.eq("status", status);
+    }
+
+    // 搜索过滤
+    if (searchTerm) {
+      countQuery = countQuery.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{"${searchTerm}"}`);
+    }
+
+    // 标签过滤
+    if (tag) {
+      countQuery = countQuery.contains("tags", [tag]);
+    }
+
+    const { count, error: countError } = await countQuery;
+
+    if (countError) throw countError;
+
+    // 然后获取当前页的数据
+    let dataQuery = supabase
       .from("articles")
       .select(
         `
@@ -117,20 +140,20 @@ export const articleApi = {
 
     // 状态过滤
     if (status !== "all") {
-      query = query.eq("status", status);
+      dataQuery = dataQuery.eq("status", status);
     }
 
     // 搜索过滤
     if (searchTerm) {
-      query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{${searchTerm}}`);
+      dataQuery = dataQuery.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{"${searchTerm}"}`);
     }
 
     // 标签过滤
     if (tag) {
-      query = query.contains("tags", [tag]);
+      dataQuery = dataQuery.contains("tags", [tag]);
     }
 
-    const { data, error, count } = await query.range(startIndex, startIndex + pageSize - 1);
+    const { data, error } = await dataQuery.range(startIndex, startIndex + pageSize - 1);
 
     if (error) throw error;
 
@@ -184,40 +207,6 @@ export const articleApi = {
           },
           createdAt: data.created_at,
           status: data.status,
-        }
-      : null;
-  },
-
-  // 根据slug获取单篇文章
-  async getArticleBySlug(slug: string) {
-    const { data, error } = await supabase
-      .from("articles")
-      .select(
-        `
-        *,
-        profiles:author_id(username, full_name, avatar_url)
-      `
-      )
-      .eq("slug", slug)
-      .eq("status", "published")
-      .single();
-
-    if (error) throw error;
-
-    return data
-      ? {
-          id: data.id,
-          slug: data.slug,
-          title: data.title,
-          content: data.content,
-          description: data.description,
-          imageUrl: data.image_url,
-          tags: data.tags || [],
-          author: {
-            name: data.profiles?.full_name || "Unknown",
-            avatar: data.profiles?.avatar_url || "",
-          },
-          createdAt: data.created_at,
         }
       : null;
   },
@@ -277,8 +266,13 @@ export const articleApi = {
     const { data, error } = await supabase
       .from("articles")
       .update({
-        ...articleData,
+        title: articleData.title,
+        slug: articleData.slug,
+        content: articleData.content,
+        description: articleData.description,
         image_url: articleData.imageUrl,
+        tags: articleData.tags,
+        status: articleData.status,
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)

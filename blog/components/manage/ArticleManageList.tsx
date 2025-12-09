@@ -3,9 +3,12 @@ import { Post } from "@/types";
 
 interface ListProps {
   posts: Post[];
+  onStatusToggle?: (postId: string, newStatus: "published" | "draft") => void;
+  onDelete?: (postId: string) => void;
+  isLoading?: boolean;
 }
 
-export default function ArticleManageList({ posts }: ListProps) {
+export default function ArticleManageList({ posts, onStatusToggle, onDelete }: ListProps) {
   if (posts.length === 0) {
     return (
       <div className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 text-center'>
@@ -28,7 +31,7 @@ export default function ArticleManageList({ posts }: ListProps) {
           </thead>
           <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
             {posts.map((post) => (
-              <ArticleListItem key={post.id} post={post} />
+              <ArticleListItem key={post.id} post={post} onStatusToggle={onStatusToggle} onDelete={onDelete} />
             ))}
           </tbody>
         </table>

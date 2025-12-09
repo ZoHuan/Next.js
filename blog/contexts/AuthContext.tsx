@@ -58,14 +58,37 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // 初始化检查用户状态
+  // 初始化检查用户状态 - 优化版本
   useEffect(() => {
+    let isMounted = true;
+
     const checkAuthStatus = async () => {
       try {
+        // 首先尝试从本地存储获取缓存的用户信息
+        const cachedUser = localStorage.getItem("auth_user");
+        if (cachedUser) {
+          const user = JSON.parse(cachedUser);
+          if (isMounted) {
+            dispatch({ type: "SET_USER", payload: user });
+          }
+        }
+
+        // 然后进行实际的认证检查
         const user = await authApi.getCurrentUser();
-        dispatch({ type: "SET_USER", payload: user });
+        if (isMounted) {
+          dispatch({ type: "SET_USER", payload: user });
+          // 缓存用户信息
+          if (user) {
+            localStorage.setItem("auth_user", JSON.stringify(user));
+          } else {
+            localStorage.removeItem("auth_user");
+          }
+        }
       } catch (error) {
-        dispatch({ type: "SET_USER", payload: null });
+        if (isMounted) {
+          dispatch({ type: "SET_USER", payload: null });
+          localStorage.removeItem("auth_user");
+        }
       }
     };
 
@@ -78,16 +101,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (event === "SIGNED_IN" && session?.user) {
         try {
           const user = await authApi.getCurrentUser();
-          dispatch({ type: "SET_USER", payload: user });
+          if (isMounted) {
+            dispatch({ type: "SET_USER", payload: user });
+            if (user) {
+              localStorage.setItem("auth_user", JSON.stringify(user));
+            }
+          }
         } catch (error) {
-          dispatch({ type: "SET_USER", payload: null });
+          if (isMounted) {
+            dispatch({ type: "SET_USER", payload: null });
+            localStorage.removeItem("auth_user");
+          }
         }
       } else if (event === "SIGNED_OUT") {
-        dispatch({ type: "SET_USER", payload: null });
+        if (isMounted) {
+          dispatch({ type: "SET_USER", payload: null });
+          localStorage.removeItem("auth_user");
+        }
       }
     });
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);

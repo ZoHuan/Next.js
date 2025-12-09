@@ -1,70 +1,116 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useRouter } from "next/navigation";
 import ArticleEditor from "@/components/manage/ArticleEditor";
+import { useAuth } from "@/contexts/AuthContext";
+import { articleApi } from "@/lib/db";
 
 export default function EditArticlePage() {
   const params = useParams();
+  const router = useRouter();
   const postId = params.id as string;
 
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState({
-    title: "使用React和TypeScript构建现代化Web应用",
-    content: `# 使用React和TypeScript构建现代化Web应用 
- 
-在当今的前端开发领域，React和TypeScript已经成为构建现代化Web应用的主流技术栈。本文将深入探讨如何利用这两种技术构建高性能、可维护的Web应用。 
- 
-## React的核心概念 
- 
-React是一个用于构建用户界面的JavaScript库，它采用组件化的思想，使开发者能够构建可复用的UI组件。 
- 
-### 组件化思想`,
-    tags: ["React", "TypeScript", "前端开发"],
-    coverImage:
-      "https://space.coze.cn/api/coze_space/gen_image?image_size=landscape_16_9&prompt=modern%20web%20development%20react%20typescript&sign=fe2e0a3297c5ac6c97c02223ddbaf9c8",
+    title: "",
+    content: "",
+    tags: [] as string[],
+    imageUrl: "",
   });
+  const { user } = useAuth();
 
-  // 模拟从API获取文章数据
+  // 从API获取文章数据
   useEffect(() => {
+    if (!postId) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchPostData = async () => {
       setIsLoading(true);
       try {
-        // 模拟API响应延迟
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const article = await articleApi.getArticleById(postId);
+
+        if (article) {
+          setInitialData({
+            title: article.title,
+            content: article.content,
+            tags: article.tags || [],
+            imageUrl: article.imageUrl || "",
+          });
+        } else {
+          alert("文章不存在");
+          router.push("/manage/articles");
+        }
       } catch (error) {
         console.error("获取文章数据失败:", error);
+        alert("获取文章数据失败，请重试");
+        router.push("/manage/articles");
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (postId) {
-      fetchPostData();
-    }
-  }, [postId]);
+    fetchPostData();
+  }, [postId, router]);
 
-  const handleSave = (articleData: { title: string; content: string; tags: string[]; coverImage?: string }) => {
-    // 这里可以添加更新文章的逻辑
-    const updatedPost = {
-      id: postId,
-      ...articleData,
-    };
-    console.log("更新文章:", updatedPost);
+  // 使用useCallback包装handleSave函数，避免无限循环
+  const handleSave = useCallback(
+    async (articleData: { title: string; content: string; tags: string[]; imageUrl: string; slug: string; description: string }) => {
+      if (!user) {
+        alert("请先登录后再进行操作");
+        router.push("/login");
+        return;
+      }
 
-    // 模拟保存成功
-    alert("文章已成功更新！");
-  };
+      if (!articleData.title.trim() || !articleData.content.trim()) {
+        alert("请填写标题和内容");
+        return;
+      }
 
-  return (
-    <ArticleEditor
-      initialTitle={initialData.title}
-      initialContent={initialData.content}
-      initialTags={initialData.tags}
-      initialCoverImage={initialData.coverImage}
-      onSave={handleSave}
-      isLoading={isLoading}
-      mode='edit'
-    />
-  );
+      try {
+        await articleApi.updateArticle(postId, {
+          title: articleData.title.trim(),
+          content: articleData.content,
+          description: articleData.description,
+          imageUrl: articleData.imageUrl || undefined,
+          tags: articleData.tags || [],
+          slug: articleData.slug || "",
+        });
+
+        alert("文章已成功更新！");
+        router.push("/manage/articles");
+        router.refresh();
+      } catch (err: any) {
+        console.error("更新文章失败:", err);
+        alert(err.message || "更新文章失败，请重试");
+      }
+    },
+    [postId, user, router]
+  ); // 依赖项：postId, user, router
+
+  if (isLoading) {
+    return (
+      <div className='flex-1 container mx-auto px-4 py-8'>
+        <div className='max-w-3xl mx-auto'>
+          <div className='bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md text-center'>
+            <div className='animate-pulse'>
+              <div className='h-4 bg-gray-300 rounded w-3/4 mx-auto mb-4'></div>
+              <div className='h-4 bg-gray-300 rounded w-1/2 mx-auto'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 如果数据无效，重定向到文章列表
+  const hasValidData = initialData.title || initialData.content || initialData.tags.length > 0 || initialData.imageUrl;
+  if (!hasValidData) {
+    router.push("/manage/articles");
+    return null;
+  }
+
+  return <ArticleEditor mode='edit' initialData={initialData} onSave={handleSave} saveLabel='更新文章' pageTitle='编辑文章' />;
 }
