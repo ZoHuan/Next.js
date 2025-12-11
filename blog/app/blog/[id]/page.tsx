@@ -5,7 +5,8 @@ import ArticleContent from "@/components/blog/ArticleContent";
 import CommentSection from "@/components/blog/CommentSection";
 import { articleApi, commentApi } from "@/lib/db";
 
-export const revalidate = 60;
+export const revalidate = 60; // 每60秒重新验证
+export const dynamicParams = true; // 允许动态参数（未预生成的页面）
 
 interface ArticlePageProps {
   params: Promise<{
@@ -61,7 +62,7 @@ export async function generateStaticParams() {
   try {
     const response = await articleApi.getArticles({
       page: 1,
-      pageSize: 50,
+      pageSize: 20,
       status: "published",
     });
 
