@@ -20,7 +20,7 @@ export default function SignupPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  const { isLoading, error, signUp, clearError } = useAuth();
+  const { isLoading, signUp } = useAuth();
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -83,10 +83,9 @@ export default function SignupPage() {
         }));
       }
 
-      if (error) clearError();
       if (successMessage) setSuccessMessage(null);
     },
-    [formErrors, error, clearError, successMessage]
+    [formErrors, successMessage]
   );
 
   const footer = (
@@ -100,7 +99,6 @@ export default function SignupPage() {
 
   return (
     <AuthFormContainer title='创建新账号' subtitle='只需输入邮箱和密码，即可完成注册' icon='fa-solid fa-user-plus' footer={footer}>
-      {error && <ErrorMessage message={error} />}
       {formErrors.submit && <ErrorMessage message={formErrors.submit} />}
       {successMessage && <div className='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>{successMessage}</div>}
 

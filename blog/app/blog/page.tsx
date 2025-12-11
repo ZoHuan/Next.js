@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import BlogPageHeader from "@/components/blog/BlogPageHeader";
 import ArticleBase from "@/components/blog/ArticleBase";
 import Pagination from "@/components/ui/Pagination";
 import { Article } from "@/types/blog.types";
 import { articleApi } from "@/lib/db";
+import LoadingState from "@/components/ui/LoadingState";
 
 // 分页配置
 const ITEMS_PER_PAGE = 9;
 
-export default function BlogPage() {
+// 将主要逻辑提取到内部组件
+function BlogContent() {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search") || "";
   const tag = searchParams.get("tag") || "";
@@ -69,5 +71,13 @@ export default function BlogPage() {
 
       {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </main>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <BlogContent />
+    </Suspense>
   );
 }

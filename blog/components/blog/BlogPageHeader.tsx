@@ -1,4 +1,7 @@
-import { PageHeaderProps } from "@/types";
+interface PageHeaderProps {
+  title: string;
+  subtitle?: string;
+}
 
 export default function BlogPageHeader({ title, subtitle }: PageHeaderProps) {
   return (
