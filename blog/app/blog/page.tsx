@@ -14,6 +14,7 @@ const ITEMS_PER_PAGE = 9;
 export default function BlogPage() {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search") || "";
+  const tag = searchParams.get("tag") || "";
 
   const [currentPage, setCurrentPage] = useState(1);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -28,6 +29,7 @@ export default function BlogPage() {
           pageSize: ITEMS_PER_PAGE,
           status: "published",
           searchTerm: searchTerm || undefined,
+          tag: tag || undefined,
         });
         setArticles(result.articles);
         setTotalCount(result.totalCount);
@@ -39,7 +41,7 @@ export default function BlogPage() {
     };
 
     fetchArticles();
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm, tag]);
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
@@ -47,10 +49,13 @@ export default function BlogPage() {
     setCurrentPage(page);
   };
 
-  // 根据是否有搜索词生成标题
+  // 根据是否有搜索词或标签生成标题
   const getPageTitle = () => {
     if (searchTerm) {
       return `搜索：${searchTerm}的文章`;
+    }
+    if (tag) {
+      return `标签：${tag}的文章`;
     }
     return "所有文章";
   };

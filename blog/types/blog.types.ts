@@ -18,13 +18,13 @@ export interface Article {
   imageUrl: string;
   tags: string[];
   author: Author;
-  createdAt: string; // 统一为createdAt
+  createdAt: string;
 }
 
 export interface Comment {
   id: string;
   author: Author;
   content: string;
-  createdAt: string; // 统一为createdAt
+  createdAt: string;
   replies?: Comment[];
 }

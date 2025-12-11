@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Article } from "@/types/blog.types";
+import { formatDate } from "@/lib/date-utils";
 
 interface HeaderProps {
   article: Article;
@@ -45,7 +46,7 @@ export default function ArticleHeader({ article }: HeaderProps) {
             </div>
           </div>
           <div className='flex items-center space-x-4'>
-            <span>{article.createdAt}</span>
+            <span>{formatDate(article.createdAt)}</span>
           </div>
         </div>
       </div>

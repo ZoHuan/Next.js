@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AuthFormContainer from "@/components/auth/AuthFormContainer";
 import FormInput from "@/components/ui/FormInput";
 import SubmitButton from "@/components/ui/SubmitButton";
-import ErrorMessage from "@/components/ui/ErrorMessage";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthValidationService } from "@/services/authValidation";
 
@@ -18,7 +17,14 @@ export default function LoginPage() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
-  const { isLoading, error, signIn, clearError } = useAuth();
+  const { user, isLoading, signIn } = useAuth();
+
+  // 如果用户已登录，自动跳转到首页
+  useEffect(() => {
+    if (user && !isLoading) {
+      router.push("/");
+    }
+  }, [user, isLoading, router]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -39,8 +45,8 @@ export default function LoginPage() {
 
       try {
         await signIn(formData.email, formData.password);
-        // 登录成功后跳转到管理页面
-        router.push("/manage/articles");
+        // 登录成功后跳转到首页
+        router.push("/");
       } catch (err) {
         // 错误已经在context中处理
       }
@@ -63,16 +69,26 @@ export default function LoginPage() {
           [name]: "",
         }));
       }
-
-      if (error) clearError();
     },
-    [formErrors, error, clearError]
+    [formErrors]
   );
 
   // 优化记住我切换
   const handleRememberMeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setRememberMe(e.target.checked);
   }, []);
+
+  // 如果用户已登录，显示加载状态或直接跳转
+  if (user && !isLoading) {
+    return (
+      <div className='min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4'></div>
+          <p className='text-gray-600 dark:text-gray-400'>正在跳转到首页...</p>
+        </div>
+      </div>
+    );
+  }
 
   const footer = (
     <p className='text-sm text-gray-600 dark:text-gray-400'>
@@ -85,8 +101,6 @@ export default function LoginPage() {
 
   return (
     <AuthFormContainer title='登录博客管理系统' subtitle='请输入您的邮箱和密码' icon='fa-solid fa-user-lock' footer={footer}>
-      {error && <ErrorMessage message={error} />}
-
       <form onSubmit={handleSubmit} noValidate>
         <div className='space-y-4'>
           <FormInput

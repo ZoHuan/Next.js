@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface ManageLayoutProps {
   children: React.ReactNode;
@@ -11,17 +10,6 @@ interface ManageLayoutProps {
 export default function ManageLayout({ children }: ManageLayoutProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    // 等待认证状态加载完成
-    if (!isLoading) {
-      // 如果用户未登录，重定向到登录页面
-      if (!user) {
-        console.log("用户未登录，重定向到登录页面");
-        router.push("/login");
-      }
-    }
-  }, [user, isLoading, router]);
 
   // 显示加载状态
   if (isLoading) {
@@ -35,8 +23,9 @@ export default function ManageLayout({ children }: ManageLayoutProps) {
     );
   }
 
-  // 如果认证检查完成但用户未登录，不渲染任何内容（已重定向）
+  // 如果用户未登录，直接重定向到登录页面
   if (!user) {
+    router.push("/login");
     return null;
   }
 

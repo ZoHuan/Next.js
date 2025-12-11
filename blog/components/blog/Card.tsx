@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Article } from "@/types/blog.types";
+import { formatDate } from "@/lib/date-utils";
 
-export default function Card({ id, title, description, imageUrl, tags, author, date }: Article) {
+export default function Card({ id, title, description, imageUrl, tags, author, createdAt }: Article) {
   return (
     <div className='group overflow-hidden rounded-xl shadow-md hover:shadow-lg bg-white dark:bg-gray-800 transition-shadow duration-300'>
       <Link className='block' href={`/blog/${id}`}>
@@ -31,13 +32,19 @@ export default function Card({ id, title, description, imageUrl, tags, author, d
         <p className='text-gray-600 dark:text-gray-300 text-sm md:text-base line-clamp-2 mb-4'>{description}</p>
         <div className='flex items-center justify-between'>
           <div className='flex items-center space-x-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center'>
-              <i className='fa-regular fa-user text-gray-600 dark:text-gray-300'></i>
-            </div>
+            {author.avatar ? (
+              <div className='w-8 h-8 rounded-full overflow-hidden'>
+                <Image src={author.avatar} alt={author.name} width={32} height={32} className='w-full h-full object-cover' />
+              </div>
+            ) : (
+              <div className='w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center'>
+                <i className='fa-regular fa-user text-gray-600 dark:text-gray-300'></i>
+              </div>
+            )}
             <span className='text-gray-700 dark:text-gray-200 text-sm'>{author.name}</span>
           </div>
           <div className='flex items-center space-x-4 text-sm'>
-            <span className='text-gray-500 dark:text-gray-400'>{date}</span>
+            <span className='text-gray-500 dark:text-gray-400'>{formatDate(createdAt)}</span>
           </div>
         </div>
       </div>

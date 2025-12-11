@@ -50,7 +50,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <div className='max-w-3xl mx-auto'>
         <ArticleHeader article={article} />
         <ArticleContent article={article} />
-        <CommentSection comments={comments} commentCount={comments.length} />
+        <CommentSection comments={comments} articleId={id} />
       </div>
     </main>
   );

@@ -7,11 +7,12 @@ import { articleApi } from "@/lib/db";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function CreateArticlePage() {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
-  // 使用useCallback包装handleSave函数，避免无限循环
+  const [isSaving, setIsSaving] = useState(false);
+
+  // 统一在这里处理验证和保存逻辑
   const handleSave = useCallback(
     async (articleData: { title: string; content: string; tags: string[]; imageUrl: string; slug: string; description: string }) => {
       if (!user) {
@@ -25,7 +26,7 @@ export default function CreateArticlePage() {
         return;
       }
 
-      setIsLoading(true);
+      setIsSaving(true);
       try {
         const result = await articleApi.createArticle({
           title: articleData.title.trim(),
@@ -44,7 +45,7 @@ export default function CreateArticlePage() {
         console.error("创建文章失败:", err);
         alert(err.message || "创建文章失败，请重试");
       } finally {
-        setIsLoading(false);
+        setIsSaving(false);
       }
     },
     [user, router]
@@ -56,6 +57,7 @@ export default function CreateArticlePage() {
       onSave={handleSave}
       pageTitle='创建新文章'
       saveLabel='创建文章'
+      isSaving={isSaving}
       initialData={{
         title: "",
         content: "",

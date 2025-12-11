@@ -31,16 +31,23 @@ export default function CoverImageUpload({ onImageSelect, existingImage, onImage
       // 生成唯一文件名
       const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const filePath = `article-images/${fileName}`;
 
       // 上传到Supabase Storage
-      const { data, error } = await supabase.storage.from("article-images").upload(filePath, file, {
+      const { data, error } = await supabase.storage.from("article-images").upload(fileName, file, {
         cacheControl: "3600",
         upsert: false,
       });
 
       if (error) {
-        throw new Error(`上传失败: ${error.message}`);
+        console.error("Supabase上传错误详情:", error);
+        // 根据错误类型提供更具体的提示
+        if (error.message.includes("bucket")) {
+          throw new Error("存储桶配置问题，请检查Supabase控制台");
+        } else if (error.message.includes("permission")) {
+          throw new Error("上传权限不足");
+        } else {
+          throw new Error(`上传失败: ${error.message}`);
+        }
       }
 
       // 获取公开URL
@@ -48,10 +55,12 @@ export default function CoverImageUpload({ onImageSelect, existingImage, onImage
         data: { publicUrl },
       } = supabase.storage.from("article-images").getPublicUrl(data.path);
 
+      console.log("上传成功，图片URL:", publicUrl);
       return publicUrl;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "上传失败";
       setUploadError(errorMessage);
+      console.error("图片上传失败详情:", error);
       throw error;
     } finally {
       setIsUploading(false);

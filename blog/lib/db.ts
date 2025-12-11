@@ -4,7 +4,6 @@ import { Tag } from "@/types";
 // 认证相关操作
 export const authApi = {
   supabase,
-
   // 生成默认头像URL
   generateDefaultAvatar(email: string): string {
     const diceBearUrl = `https://api.dicebear.com/7.x/pixel-art/png?seed=${email}&background=3b82f6&color=fff`;
@@ -17,13 +16,8 @@ export const authApi = {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          username,
-        },
-      },
+      options: { data: { username } },
     });
-
     if (error) throw error;
 
     // 如果注册成功且用户已确认，创建profiles记录
@@ -48,53 +42,42 @@ export const authApi = {
 
   // 用户登录
   async signIn(email: string, password: string) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return data;
   },
 
   // 用户登出
   async signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-  },
-
-  // 获取当前用户（包含profile信息）
-  async getCurrentUser() {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
-    if (error) throw error;
-
-    if (!user) return null;
-
-    // 同时获取profile信息
     try {
-      const { data: profile } = await supabase.from("profiles").select("username, avatar_url").eq("id", user.id).single();
-
-      return {
-        ...user,
-        profile,
-      };
-    } catch (_profileError) {
-      // 如果profile不存在，只返回user信息
-      return user;
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Supabase登出失败:", error);
+        throw error;
+      }
+      console.log("用户已成功登出");
+    } catch (error) {
+      console.error("登出过程中发生错误:", error);
+      // 即使Supabase登出失败，也清除本地状态
+      throw error;
     }
   },
 
-  // 获取会话信息
-  async getSession() {
+  // 获取当前用户
+  async getCurrentUser() {
     const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
-    if (error) throw error;
-    return session;
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return null;
+
+    // 获取profile信息（用户名和头像）
+    const { data: profile } = await supabase.from("profiles").select("username, avatar_url").eq("id", user.id).single();
+
+    return {
+      ...user,
+      profile,
+    };
   },
 };
 
@@ -320,7 +303,7 @@ export const articleApi = {
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
 
-    return tags;
+    return tags.slice(0, 10);
   },
 };
 
@@ -392,7 +375,7 @@ export const commentApi = {
       .select(
         `
         *,
-        profiles:author_id(username, full_name, avatar_url)
+        profiles:author_id(username, avatar_url)
       `
       )
       .single();
@@ -403,7 +386,7 @@ export const commentApi = {
       id: data.id,
       content: data.content,
       author: {
-        name: data.profiles?.full_name || "Unknown",
+        name: data.profiles?.username || "Unknown",
         avatar: data.profiles?.avatar_url || "",
       },
       createdAt: data.created_at,

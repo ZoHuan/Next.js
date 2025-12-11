@@ -7,7 +7,6 @@ import CoverImageUpload from "@/components/manage/CoverImageUpload";
 import TagManager from "@/components/manage/TagManager";
 import MarkdownEditor from "@/components/manage/MarkdownEditor";
 import ArticleActionButtons from "@/components/manage/ArticleActionButtons";
-import { useAuth } from "@/contexts/AuthContext";
 
 export interface ArticleEditorProps {
   initialData?: {
@@ -21,6 +20,7 @@ export interface ArticleEditorProps {
   saveLabel?: string;
   mode?: "create" | "edit";
   showBackButton?: boolean;
+  isSaving?: boolean;
 }
 
 export default function ArticleEditor({
@@ -35,14 +35,13 @@ export default function ArticleEditor({
   saveLabel = "保存文章",
   pageTitle,
   showBackButton = true,
+  isSaving = false,
 }: ArticleEditorProps) {
   // 直接使用initialData的值初始化状态
   const [title, setTitle] = useState(initialData.title);
   const [content, setContent] = useState(initialData.content);
   const [tags, setTags] = useState<string[]>(initialData.tags);
   const [imageUrl, setImageUrl] = useState(initialData.imageUrl);
-
-  const { user } = useAuth();
 
   // 生成slug的方法
   const generateSlug = (title: string): string => {
@@ -73,12 +72,6 @@ export default function ArticleEditor({
   };
 
   const handleSave = () => {
-    // 检查用户登录状态
-    if (!user) {
-      alert("请先登录后再进行操作");
-      return;
-    }
-
     const articleData = {
       title,
       content,
@@ -123,7 +116,7 @@ export default function ArticleEditor({
             <MarkdownEditor value={content} onChange={setContent} height={600} placeholder='开始编写你的文章内容（支持Markdown格式）...' />
 
             {/* 操作按钮 */}
-            <ArticleActionButtons onSave={handleSave} saveLabel={saveLabel} />
+            <ArticleActionButtons onSave={handleSave} saveLabel={saveLabel} isSaving={isSaving} />
           </div>
         </div>
       </div>

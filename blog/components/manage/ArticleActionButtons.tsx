@@ -1,9 +1,11 @@
 import Link from "next/link";
+
 interface ActionButtonsProps {
   onSave: () => void;
   cancelHref?: string;
   saveLabel?: string;
   cancelLabel?: string;
+  isSaving?: boolean;
 }
 
 export default function ArticleActionButtons({
@@ -11,7 +13,15 @@ export default function ArticleActionButtons({
   cancelHref = "/manage/articles",
   saveLabel = "保存文章",
   cancelLabel = "取消",
+  isSaving = false,
 }: ActionButtonsProps) {
+  const handleSaveClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isSaving) {
+      onSave();
+    }
+  };
+
   return (
     <div className='flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-800'>
       <Link
@@ -21,10 +31,22 @@ export default function ArticleActionButtons({
         {cancelLabel}
       </Link>
       <button
-        onClick={onSave}
-        className='px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors flex items-center'
+        onClick={handleSaveClick}
+        disabled={isSaving}
+        className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors flex items-center ${
+          isSaving ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+        }`}
       >
-        <i className='fa-solid fa-save mr-2'></i> {saveLabel}
+        {isSaving ? (
+          <>
+            <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+            保存中...
+          </>
+        ) : (
+          <>
+            <i className='fa-solid fa-save mr-2'></i> {saveLabel}
+          </>
+        )}
       </button>
     </div>
   );

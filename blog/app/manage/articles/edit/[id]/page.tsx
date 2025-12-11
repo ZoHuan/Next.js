@@ -11,6 +11,7 @@ export default function EditArticlePage() {
   const router = useRouter();
   const postId = params.id as string;
 
+  const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState({
     title: "",
@@ -69,6 +70,7 @@ export default function EditArticlePage() {
         return;
       }
 
+      setIsSaving(true);
       try {
         await articleApi.updateArticle(postId, {
           title: articleData.title.trim(),
@@ -85,11 +87,12 @@ export default function EditArticlePage() {
       } catch (err: any) {
         console.error("更新文章失败:", err);
         alert(err.message || "更新文章失败，请重试");
+      } finally {
+        setIsSaving(false);
       }
     },
     [postId, user, router]
-  ); // 依赖项：postId, user, router
-
+  );
   if (isLoading) {
     return (
       <div className='flex-1 container mx-auto px-4 py-8'>
@@ -112,5 +115,5 @@ export default function EditArticlePage() {
     return null;
   }
 
-  return <ArticleEditor mode='edit' initialData={initialData} onSave={handleSave} saveLabel='更新文章' pageTitle='编辑文章' />;
+  return <ArticleEditor mode='edit' initialData={initialData} onSave={handleSave} saveLabel='更新文章' pageTitle='编辑文章' isSaving={isSaving} />;
 }
